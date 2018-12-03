@@ -44,7 +44,6 @@ int main (int argc, char **argv)
     
   if(check_arg(argv[3])==-1) {cerr<<"Wrong number of  consumerss input!(0-9)"<<endl; exit(1);}
   else  num_con=check_arg(argv[4]);
-
 		
   //set up and initialize semaphores
 
@@ -56,46 +55,44 @@ int main (int argc, char **argv)
   if(semid==-1) {cout<<"Failure to create semaphore set!"<<endl;exit(2);}
   
 //s0:mutex
-  if(sem_init(semid,0,1)==-1) {cout<<"Failure to initialize mutex semaphore!"<<endl;exit(3);}
+  if(sem_init(semid,0,1)==-1) {cerr<<"Failure to initialize mutex semaphore!"<<endl;exit(3);}
   
   //s1:spaces
-  if(sem_init(semid,1,N)==-1) {cout<<"Failure to initialize space semaphore!"<<endl;exit(3);}
+  if(sem_init(semid,1,N)==-1) {cerr<<"Failure to initialize space semaphore!"<<endl;exit(3);}
 
   //s2:P,item
-  if(sem_init(semid,2,0)==-1) {cout<<"Failure to initialize item semaphore!"<<endl;exit(3);}
+  if(sem_init(semid,2,0)==-1) {cerr<<"Failure to initialize item semaphore!"<<endl;exit(3);}
   
-
-
    pthread_t producerid[num_pro];//producer thread
    pthread_t consumerid[num_con];//consumer thread
    
     int parameter = N;
 
-
   for(int i=0;i<num_pro;i++){
-    pthread_create (&producerid[i], NULL, producer, (void *) &parameter);   
+    if(pthread_create (&producerid[i], NULL, producer, (void *) &parameter)!=0)
+      {cerr<<"Failure to create producer thread!"<<endl; exit(4);}
   }
-
     
   for(int i=0;i<num_con;i++){
-    pthread_create (&consumerid[i], NULL, consumer, (void *) &parameter);
+    if(pthread_create (&consumerid[i], NULL, consumer, (void *) &parameter)!=0)
+      {cerr<<"Failure to create consumer thread!"<<endl; exit(4);}
   }
   
-  
+ 
   for(int i=0;i<num_pro;i++){
-    pthread_join (producerid[i], NULL);}
+    if(pthread_join (producerid[i], NULL)!=0) {cerr<<"Failure to join producer thread!"<<endl; exit(5);}
+  }
 
   for(int i=0;i<num_con;i++){
-    pthread_join (consumerid[i], NULL);}
+    if(pthread_join (consumerid[i], NULL)!=0) {cerr<<"Failure to join consumer thread!"<<endl; exit(5);}
+  }
 
-  sem_close(semid);
+  if(sem_close(semid)==-1) {cerr<<"Failure to destroy semaphore set!"<<endl; exit(6);}
   
   delete []buf_ptr;//delete ptr to heap memory
 
   return 0;
 }
-
-
 
 void *producer (void *parameter)
 {
@@ -109,6 +106,7 @@ void *producer (void *parameter)
      --cnt_pro;//produce job
      
      sem_wait(semid,1);//block when buffer is full
+     
      sem_wait(semid,0);//enter critical section
      
      buf_ptr[in]=duration;
@@ -124,8 +122,7 @@ void *producer (void *parameter)
      if(cnt_pro<=0){printf("producer (%d): No more jobs to generate\n",pro);
        pthread_exit(0);}
      }
-  
-   
+    
    pthread_exit(0);
 }
 
@@ -162,11 +159,8 @@ void *consumer (void *parameter)
    pthread_exit (0);
 }
 
-
 /***********************************
 
-1. sleep when blocked (full/empty)
-
-2. test on linux environment, helper functions not suitable for mac OS
+1. sleep for 20s when blocked (full/empty)
 
  **********************************/

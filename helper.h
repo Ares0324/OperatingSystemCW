@@ -22,7 +22,7 @@
 # include <cstdlib>
 using namespace std;
 
-# define SEM_KEY 0x5A // Change this number as needed
+# define SEM_KEY 0x1F // Change this number as needed
 
 
 union semun {
@@ -43,3 +43,6 @@ int sem_close (int);
 #define INPUT_ERROR 1
 #define SEMAPHORE_CREATION_ERROR 2
 #define SEMAPHORE_INITIALIZATION_ERROR 3
+#define THREAD_CREATION_ERROR 4
+#define THREAD_JOIN_ERROR 5
+#define SEMAPHORE_DESTROY_ERROR 6
