@@ -24,6 +24,9 @@ int* buf_ptr;//pointer to critical array
   int cnt_con;//total number of jobs to consume
   int semid;//semaphore set id
 
+//sleep parameter
+int item;
+
 int main (int argc, char **argv)
 {
  
@@ -65,8 +68,9 @@ int main (int argc, char **argv)
   
    pthread_t producerid[num_pro];//producer thread
    pthread_t consumerid[num_con];//consumer thread
-   
-    int parameter = N;
+
+   item=N;
+   int parameter=N;
 
   for(int i=0;i<num_pro;i++){
     if(pthread_create (&producerid[i], NULL, producer, (void *) &parameter)!=0)
@@ -101,9 +105,19 @@ void *producer (void *parameter)
   int duration; 
   
   while(1){
+
+    if(cnt_pro<=0){printf("producer (%d): No more jobs to generate\n",pro);
+       pthread_exit(0);}
+     }
     
      duration=rand()%10+1;     
      --cnt_pro;//produce job
+     
+     item--;     
+     if(item<=0) sleep(20);
+     if(item<=0) {
+       printf("producer (%d): No more jobs to generate\n",pro);
+       pthread_exit(0);}
      
      sem_wait(semid,1);//block when buffer is full
      
@@ -118,10 +132,7 @@ void *producer (void *parameter)
      sem_signal(semid,2);
     
      sleep(rand()%5+1);//sleep for 1-5s after producing a job
-     
-     if(cnt_pro<=0){printf("producer (%d): No more jobs to generate\n",pro);
-       pthread_exit(0);}
-     }
+        
     
    pthread_exit(0);
 }
@@ -133,6 +144,15 @@ void *consumer (void *parameter)
   int job_id;
   
   while(1){
+
+    if(cnt_con<=0){printf("Consumer(%d): No more jobs left\n",con);
+      pthread_exit(0);}
+     
+     item++;
+     if(item>=N) sleep(20);
+     if(item>=N) {
+       printf("Consumer(%d): No more jobs left\n",con);
+       pthread_exit(0);}
      
     sem_wait(semid,2);//block when buffer is empty
     sem_wait(semid,0);//enter critical section
@@ -150,10 +170,7 @@ void *consumer (void *parameter)
     printf("Consumer(%d): job id %d completed\n",con,job_id);
     
     --cnt_con;//consume a job
-  
-
-    if(cnt_con<=0){ printf("Consumer(%d): No more jobs left\n",con);
-      pthread_exit(0);}
+   
   }
   
    pthread_exit (0);
@@ -161,6 +178,6 @@ void *consumer (void *parameter)
 
 /***********************************
 
-1. sleep for 20s when blocked (full/empty)
+1. sleep for 20s when blocked (not done)
 
  **********************************/

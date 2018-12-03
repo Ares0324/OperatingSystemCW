@@ -48,6 +48,7 @@ void sem_wait (int id, short unsigned int num)
     {num, -1, SEM_UNDO}
   };
   semop (id, op, 1);
+  
 }
 
 void sem_signal (int id, short unsigned int num)
