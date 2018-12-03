@@ -110,14 +110,17 @@ void *producer (void *parameter)
        pthread_exit(0);}
      }
     
-     duration=rand()%10+1;     
+     duration=rand()%10+1;
      --cnt_pro;//produce job
+
      
+     /*  
      item--;     
      if(item<=0) sleep(20);
      if(item<=0) {
        printf("producer (%d): No more jobs to generate\n",pro);
        pthread_exit(0);}
+     */
      
      sem_wait(semid,1);//block when buffer is full
      
@@ -148,11 +151,12 @@ void *consumer (void *parameter)
     if(cnt_con<=0){printf("Consumer(%d): No more jobs left\n",con);
       pthread_exit(0);}
      
-     item++;
+    /* item++;
      if(item>=N) sleep(20);
      if(item>=N) {
        printf("Consumer(%d): No more jobs left\n",con);
        pthread_exit(0);}
+    */
      
     sem_wait(semid,2);//block when buffer is empty
     sem_wait(semid,0);//enter critical section
@@ -178,6 +182,20 @@ void *consumer (void *parameter)
 
 /***********************************
 
-1. sleep for 20s when blocked (not done)
+***** sleep for 20s when blocked (not done) modify in main, substituting pthread_join API:
+
+struct timespec ts;
+int s;
+if(clock_gettime(CLOCK_REALTIME, &ts))==-1){cerr<<"Failure to get real time!"<<endl; exit();}
+
+ts.tv_sec+=20;
+
+******  do separately for producer and consumer
+
+
+s=pthread_timedjoin_np(thread,NULL, &ts);
+if(s==ETIMEDOUT){cout<<"No position in the que to deposit a job after waiting for 20s!"<<endl;}
+else if(s!=0){cout<<"Failure to join thread"<<endl;}
+
 
  **********************************/
