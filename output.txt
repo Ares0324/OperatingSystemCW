@@ -1,43 +1,46 @@
-Output when run: ./main 5 6 2 3
-Block and sleep for 20s not achieved.
+**************************************************************
 
+Output when running: ./main 5 6 2 3
+block and sleep for 20s not achieved.
+
+**************************************************************
 
 Producer(1): job id 0 duration 4
-Consumer(1): job id 0 executing time 4
 Producer(2): job id 1 duration 8
-Consumer(2): job id 1 executing time 8
+Consumer(2): job id 0 executing time 4
+Consumer(1): job id 1 executing time 8
 Producer(2): job id 2 duration 4
 Consumer(3): job id 2 executing time 4
 Producer(1): job id 3 duration 7
 Producer(2): job id 4 duration 10
-Consumer(1): job id 0 completed
-Consumer(1): job id 3 executing time 7
+Consumer(2): job id 0 completed
+Consumer(2): job id 3 executing time 7
 Producer(2): job id 0 duration 3
 Producer(1): job id 1 duration 1
 Consumer(3): job id 2 completed
 Consumer(3): job id 4 executing time 10
 Producer(2): job id 2 duration 4
-Consumer(2): job id 1 completed
-Consumer(2): job id 0 executing time 3
+Consumer(1): job id 1 completed
+Consumer(1): job id 0 executing time 3
 Producer(2): job id 3 duration 1
 Producer(1): job id 4 duration 3
-Consumer(1): job id 3 completed
-Consumer(1): job id 1 executing time 1
-Consumer(2): job id 0 completed
-Consumer(2): job id 2 executing time 4
+Consumer(2): job id 3 completed
+Consumer(2): job id 1 executing time 1
 producer (2): No more jobs to generate
+Consumer(1): job id 0 completed
+Consumer(1): job id 2 executing time 4
 Producer(1): job id 0 duration 2
-Consumer(1): job id 1 completed
-Consumer(1): job id 3 executing time 1
-Consumer(1): job id 3 completed
-Consumer(1): job id 4 executing time 3
-Consumer(2): job id 2 completed
-Consumer(2): job id 0 executing time 2
+Consumer(2): job id 1 completed
+Consumer(2): job id 3 executing time 1
+Consumer(2): job id 3 completed
+Consumer(2): job id 4 executing time 3
 Consumer(3): job id 4 completed
-Consumer(3): No more jobs left
-Producer(1): job id 1 duration 8
-Consumer(1): job id 4 completed
+Consumer(3): job id 0 executing time 2
+Consumer(1): job id 2 completed
 Consumer(1): No more jobs left
-Consumer(2): job id 0 completed
+Producer(1): job id 1 duration 8
+Consumer(2): job id 4 completed
 Consumer(2): No more jobs left
+Consumer(3): job id 0 completed
+Consumer(3): No more jobs left
 producer (1): No more jobs to generate
