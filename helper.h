@@ -22,7 +22,7 @@
 # include <cstdlib>
 using namespace std;
 
-# define SEM_KEY 0x1F // Change this number as needed
+# define SEM_KEY 0x0F // Change this number as needed
 
 
 union semun {
